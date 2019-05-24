@@ -1,0 +1,17 @@
+<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
+    <session-factory>
+        <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">12345678</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <property name="show_sql">true</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
+
+        <mapping class="user.model.UserEntity"/>
+        <mapping class="product.model.ProductEntity"/>
+        <mapping class="order.model.OrderEntity"/>
+    </session-factory>
+</hibernate-configuration>
