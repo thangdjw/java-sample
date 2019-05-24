@@ -1,85 +1,151 @@
-api list
-
-## Account Service
-
-used for authenticate & management user account. User may login by many way
-
-1. Basic Login
-### POST /api/account/login/basic
-- *IN* : login using username (email) and password. auth info will be hash to search in database
-- *OUT* : status 200, body "true", cookie access_token if login success. Or >400 status if failed
-
-Body
-- username : string
-- password : string
-
-2. OAuth Login
-### POST /api/account/login/{oauth}
-- *IN* : login using oauth method
-- *OUT* : redirect to 3rth provider, return status 200, body "true", cookie access_token if login success. Or >400 status if failed
+API List
 
 ## User Service
 
 used to management user info
 
-1. Create user info
-### POST /api/user
-- *IN* : user info
-- *OUT* : changed user info
+### Retrieve user info
 
-Body
-- full_name : string
-- birthday : date
-- location : string
-- language : string
+```http
+GET /api/user/{id}
+```
+|param|type|description|
+|---|---|---|
+|id|string|id of user|
 
-2. Retrieve user info
-### GET /api/user/{id}
-- *IN* : retrieve special user info by id
-- *OUT* : user info except sensitive field
+---
 
-### Product Service
+### Add new User
 
-used to retrieve product info
+```http
+POST /api/user
+```
+|body|type|description|
+|---|---|---|
+|fullName|string|user name|
+|birthDay|yyyy-MM-dd|birthday of user|
+|location|string|current living state|
+|language|string|language code. ex : vn|
 
-1. List product
-### GET /api/products?category&price&query
+---
 
-used to retrieve product info by some of field
+### Update user info
 
-- *IN* : filtered field value
-- *OUT* : list of valid product
+```http
+PUT /api/user
+```
+|body|type|description|
+|---|---|---|
+|fullName|string|user name|
+|birthDay|yyyy-MM-dd|birthday of user|
+|location|string|current living state|
+|language|string|language code. ex : vn|
 
-2. Get product
-### GET /api/product/{id|barcode}
+## Product Service
 
-used to retrieve special product
+Used to management product info
 
-3. Add product
+---
 
-### POST /api/product
+### Search product by identity with filter
 
-### Rating Service
-schedule job to recalculate rating & update product db
+```http
+GET /api/product/search/{identity}
+```
+|param|type|description|
+|---|---|---|
+|identity|string|product name, or barcode|
 
-1. Re-Calculate
-### GET /api/rating/re-cal
+|query|type|description|
+|---|---|---|
+|filter_name|string|exactly name of product|
+|filter_lt_price|float|filter product with price <= given price|
+|filter_gt_price|float|filter product with price >= given price|
+|filter_owner|string|filter product by seller|
+|filter_producer|string|filter product by maker|
+|filter_species|string|filter product by species|
+|sort_name|boolean|true if products sort desc by name|
+|sort_price|boolean|true if products sort desc by price|
 
-2. Set State
-### GET /api/rating/{status}/status
+---
 
-### Order Service
-Used to add order
+### Get product by id
 
-1. Add Order
+```http
+GET /api/product/{id}
+```
 
-### POST : /api/order
+|param|type|description|
+|---|---|---|
+|id|number|id of target product|
 
-2. Update Order
-### PUT : /api/order/{id}
+---
 
-3. Get Order
-### GET : /api/order/{id}
+### Add a product
 
-4. List Order
-### GET : /api/orders/{uid}
+```http
+POST /api/product
+```
+
+|body|type|description|
+|---|---|---|
+|barcode|number|barcode of product|
+|name|string|name of product|
+|image|string[]|list of product image url|
+|ownerId|string|seller user id|
+|producer|string|company or national who make this product|
+|description|string|product information|
+|version|string|version of this product|
+|price|float|price of this product|
+|species|string|species of this product. Ex : iphone|
+
+---
+
+### Update product info
+
+```http
+PUT /api/product/{id}
+```
+
+|body|type|description|
+|---|---|---|
+|barcode|number|barcode of product|
+|name|string|name of product|
+|image|string[]|list of product image url|
+|ownerId|string|seller user id|
+|producer|string|company or national who make this product|
+|description|string|product information|
+|version|string|version of this product|
+|price|float|price of this product|
+|species|string|species of this product. Ex : iphone|
+
+## Order service
+used to create & manager order to buy a product
+
+### Get order by id
+
+```http
+GET /api/order/{id}
+```
+
+|param|type|description|
+|---|---|---|
+|id|number|id of target order|
+
+---
+
+### Add new order
+
+```http
+POST /api/order
+```
+
+|body|type|description|
+|---|---|---|
+|clientId|string|user id of this client|
+|productId|string|id of target product|
+|amount|string[]|number of order of this product|
+|totalPrice|string|price of this order|
+|deliveryAddress|string|address to delivery this product|
+|transporter|string|shipper. include : SHIPPO, GIAO_HANG_NHANH, GIAO_HANG_TIET_KIEN|
+|status|string|status of this order. include : COMPLETE, CANCEL, DELAY, WAIT|
